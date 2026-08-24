@@ -14,5 +14,8 @@
     "dev:web": "pnpm --filter @mandato-ar/web dev",
     "typecheck": "pnpm -r run typecheck"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "zod": "^3.25.76"
+  }
 }

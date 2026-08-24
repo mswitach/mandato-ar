@@ -4,6 +4,7 @@ export interface PaymentRequirement {
   network: string;
   payTo?: string;
   resource?: string;
+  extra?: Record<string, unknown>;
 }
 
 export interface PaymentProof {
@@ -11,6 +12,7 @@ export interface PaymentProof {
   headerValue: string;
   amountUsdc: string;
   dryRun: boolean;
+  txHash?: string;
 }
 
 export interface PaymentAdapter {

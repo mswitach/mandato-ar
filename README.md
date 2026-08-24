@@ -33,10 +33,18 @@ Presets demo: FX blue · BCRA CUIT `30500010912` · legal search `monotributo`.
 ```
 mandato-ar/
   packages/mandate/   # schema zod, create/sign/verify, allowlist, budget
-  packages/buyer/     # payAndFetch, PaymentAdapter, HttpX402Adapter
+  packages/buyer/     # payAndFetch, PaymentAdapter, HttpX402Adapter (x402 v2)
   apps/cli/           # mandato ask "..." [--live]
   apps/web/           # Vite+React one-pager
 ```
+
+### Tecnología
+
+- **x402 v2**: protocolo HTTP 402 Payment Required con header `PAYMENT-REQUIRED` (base64url JSON)
+- **Exact EVM**: esquema de pago con EIP-3009 `transferWithAuthorization` (gasless)
+- **@x402/evm** + **@x402/core**: SDKs oficiales de x402 para firma y verificación
+- **viem**: cliente Ethereum para creación de cuentas y firma EIP-712
+- Dry-run mantiene fixtures para CI/CD sin secretos
 
 ## Requisitos
 
@@ -46,13 +54,29 @@ mandato-ar/
 ```bash
 corepack enable
 pnpm install
-pnpm --filter @mandato-ar/mandate test
-pnpm ask -- "dolar blue"          # dry-run (default)
-pnpm ask -- --live "dolar blue"   # requiere BUYER_PRIVATE_KEY + USDC Sepolia
-pnpm dev:web
+pnpm test                         # todos los tests (sin secretos)
+pnpm ask -- "dolar blue"          # dry-run (default, sin red)
+pnpm dev:web                      # web UI demo
 ```
 
-Copia `.env.example` → `.env` y ajusta secretos **solo en local**.
+### Modo live (pagos reales en Base Sepolia)
+
+1. Obtén testnet tokens:
+   - **ETH Sepolia** (para gas si es necesario): [Coinbase Base Sepolia Faucet](https://www.coinbase.com/faucets/base-ethereum-goerli-faucet)
+   - **USDC Sepolia** (para pagos): bridge desde Sepolia con [Superbridge](https://testnets.superbridge.app/base-sepolia) o faucet de Circle
+   
+2. Copia `.env.example` → `.env` y ajusta:
+   ```bash
+   BUYER_PRIVATE_KEY=0x...  # tu wallet throwaway (nunca claves de producción!)
+   BUYER_DRY_RUN=false
+   ```
+
+3. Ejecuta con `--live`:
+   ```bash
+   pnpm ask -- --live "dolar blue"
+   ```
+
+El pago usa **EIP-3009** (transferencia gasless de USDC) via x402 Exact EVM. El facilitador paga el gas; tu wallet solo firma la autorización. La transacción se liquida on-chain en Base Sepolia (contract: `0x036CbD53842c5426634e7929541eC2318f3dCF7e`).
 
 ## Mandate v0
 

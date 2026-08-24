@@ -1,7 +1,7 @@
-import { hmac } from "@noble/hashes/hmac";
-import { sha256 } from "@noble/hashes/sha256";
-import { ed25519 } from "@noble/curves/ed25519";
-import { bytesToHex, hexToBytes, randomBytes, utf8ToBytes } from "@noble/hashes/utils";
+import { hmac } from "@noble/hashes/hmac.js";
+import { sha256 } from "@noble/hashes/sha2.js";
+import { ed25519 } from "@noble/curves/ed25519.js";
+import { bytesToHex, hexToBytes, randomBytes, utf8ToBytes } from "@noble/hashes/utils.js";
 import { canonicalizeMandate } from "./canonical.js";
 import type { IntentMandate, UnsignedMandate } from "./schema.js";
 
@@ -86,7 +86,7 @@ export function generateEd25519DemoKeypair(): {
   privateKeyHex: string;
   publicKeyHex: string;
 } {
-  const privateKey = ed25519.utils.randomPrivateKey();
+  const privateKey = ed25519.utils.randomSecretKey();
   const publicKey = ed25519.getPublicKey(privateKey);
   return {
     privateKeyHex: bytesToHex(privateKey),
