@@ -30,9 +30,10 @@ Env: see .env.example (BUYER_DRY_RUN=true by default)
 function parseArgs(argv: string[]) {
   const live = argv.includes("--live");
   const filtered = argv.filter((a) => a !== "--live" && a !== "--");
-  const cmd = filtered[0];
-  const question = filtered.slice(1).join(" ").trim();
-  return { live, cmd, question };
+  const askIdx = filtered.indexOf("ask");
+  if (askIdx === -1) return { live, cmd: filtered[0] ?? "", question: "" };
+  const question = filtered.slice(askIdx + 1).join(" ").trim();
+  return { live, cmd: "ask", question };
 }
 
 function buildMandate(): { mandate: IntentMandate; secret: string } {

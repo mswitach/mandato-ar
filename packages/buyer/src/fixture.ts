@@ -1,5 +1,7 @@
+import { utf8ToBase64Url } from "./base64url.js";
+
 /** Example HTTP 402 challenge header / body used in dry-run demos. */
-export const FIXTURE_402_HEADER = "X-PAYMENT-REQUIRED";
+export const FIXTURE_402_HEADER = "PAYMENT-REQUIRED";
 
 export const FIXTURE_402_BODY = {
   x402Version: 2,
@@ -19,5 +21,5 @@ export const FIXTURE_402_BODY = {
 export function encodePaymentRequiredHeader(
   body: unknown = FIXTURE_402_BODY,
 ): string {
-  return Buffer.from(JSON.stringify(body), "utf8").toString("base64url");
+  return utf8ToBase64Url(JSON.stringify(body));
 }

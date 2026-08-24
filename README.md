@@ -74,7 +74,7 @@ Copia `.env.example` → `.env` y ajusta secretos **solo en local**.
 }
 ```
 
-Firma: payload canonico JSON sin `signature`; HMAC-SHA256 (demo) o ed25519. Ver `packages/mandate`.
+Firma: payload canonico JSON sin `signature`; HMAC-SHA256 (demo) o ed25519 (hex keys via @noble). Ver `packages/mandate`.
 
 ## Licencia
 

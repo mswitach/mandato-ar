@@ -1,3 +1,4 @@
+import { utf8ToBase64Url } from "./base64url.js";
 import type { PaymentAdapter, PaymentProof, PaymentRequirement } from "./types.js";
 
 export interface HttpX402AdapterOptions {
@@ -35,13 +36,12 @@ export class HttpX402Adapter implements PaymentAdapter {
         note: "HttpX402Adapter stub — set BUYER_PRIVATE_KEY and dryRun=false for live",
       };
       return {
-        headerValue: Buffer.from(JSON.stringify(stub), "utf8").toString("base64url"),
+        headerValue: utf8ToBase64Url(JSON.stringify(stub)),
         amountUsdc: microsToUsdc(req.amount),
         dryRun: true,
       };
     }
 
-    // Live path: scaffold only — wire facilitator settle/verify with your wallet.
     throw new Error(
       `Live x402 settle not wired in MVP stub. Facilitator: ${this.facilitatorUrl}. ` +
         "Use dry-run or plug a wallet PaymentAdapter.",
