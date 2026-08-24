@@ -9,11 +9,16 @@ export const FIXTURE_402_BODY = {
     {
       scheme: "exact",
       network: "eip155:84532",
-      maxAmountRequired: "1000",
-      asset: "USDC",
+      amount: "1000",
+      asset: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
       payTo: "0xFd576f2fEf750E202ad8DbDfEcEF088f9AA7A30F",
       resource: "https://ar-agent-fx.mswitach.workers.dev/v1/fx/usd/blue",
       description: "Cotizacion USD/ARS blue",
+      maxTimeoutSeconds: 300,
+      extra: {
+        name: "USDC",
+        version: "2",
+      },
     },
   ],
 } as const;

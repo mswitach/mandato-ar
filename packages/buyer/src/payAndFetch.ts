@@ -130,23 +130,39 @@ async function parse402(
   url: string,
   priceHint?: string,
 ): Promise<{ payment: PaymentRequirement; amountUsdcDisplay: string }> {
-  let body: unknown;
-  try {
-    body = await res.json();
-  } catch {
-    body = FIXTURE_402_BODY;
+  const paymentRequiredHeader = res.headers.get("payment-required");
+  let paymentData: unknown;
+
+  if (paymentRequiredHeader) {
+    try {
+      const decoded = Buffer.from(paymentRequiredHeader, "base64url").toString("utf8");
+      paymentData = JSON.parse(decoded);
+    } catch (error) {
+      console.warn("Failed to parse PAYMENT-REQUIRED header, falling back to body:", error);
+    }
   }
-  const accepts = (body as { accepts?: Array<Record<string, string>> })?.accepts?.[0];
-  const amountRaw = accepts?.maxAmountRequired ?? (priceHint ? usdcToMicros(priceHint) : "1000");
+
+  if (!paymentData) {
+    try {
+      paymentData = await res.json();
+    } catch {
+      paymentData = FIXTURE_402_BODY;
+    }
+  }
+
+  const accepts = (paymentData as { accepts?: Array<Record<string, unknown>> })?.accepts?.[0];
+  const amountRaw = String(accepts?.amount ?? accepts?.maxAmountRequired ?? (priceHint ? usdcToMicros(priceHint) : "1000"));
   const amountUsdcDisplay = priceHint ?? microsToUsdc(amountRaw);
+  
   return {
     amountUsdcDisplay,
     payment: {
       amount: amountRaw,
-      asset: accepts?.asset ?? "USDC",
-      network: accepts?.network ?? "eip155:84532",
-      payTo: accepts?.payTo,
-      resource: accepts?.resource ?? url,
+      asset: String(accepts?.asset ?? "USDC"),
+      network: String(accepts?.network ?? "eip155:84532"),
+      payTo: accepts?.payTo as string | undefined,
+      resource: (accepts?.resource as string | undefined) ?? url,
+      extra: accepts?.extra as Record<string, unknown> | undefined,
     },
   };
 }
