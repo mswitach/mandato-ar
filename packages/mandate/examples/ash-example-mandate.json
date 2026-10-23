@@ -1,0 +1,65 @@
+{
+  "mandate": {
+    "version": "0.2.0-draft",
+    "kind": "intent-mandate",
+    "example": true,
+    "principal": {
+      "id": "did:example:marce-switach",
+      "role": "authorizer",
+      "display": "Marce Switach (Buenos Aires)"
+    },
+    "agent": {
+      "id": "did:example:ash-coinbase-trading-bot",
+      "handle": "@Must_be_Ash",
+      "role": "delegate"
+    },
+    "network": "eip155:84532",
+    "scope": {
+      "allowedAssets": [
+        "USDC",
+        "ETH",
+        "cbBTC"
+      ],
+      "allowedActions": [
+        "spot_buy",
+        "spot_sell"
+      ],
+      "deniedActions": [
+        "withdraw",
+        "transfer_out",
+        "leverage",
+        "perps"
+      ],
+      "approvalMode": "approval-first"
+    },
+    "limits": {
+      "currency": "USDC",
+      "maxPerOperationUsdc": "25",
+      "maxPerDayUsdc": "100",
+      "dayBoundary": "UTC",
+      "aboveLimit": "reject"
+    },
+    "issuedAt": "2026-10-22T21:00:00.000Z",
+    "expiresAt": "2026-11-22T23:59:59.000Z",
+    "authorizedBy": "did:example:marce-switach",
+    "disputeLiability": {
+      "withinMandate": "principal",
+      "outsideMandate": "agent_operator",
+      "note": "PROPUESTA a validar con Marce y Ash: pérdidas dentro del mandato las asume el principal. Ejecuciones fuera de tope/activos/vencimiento las asume el operador del agente."
+    },
+    "receipt": {
+      "required": true,
+      "chain": "eip155:84532",
+      "format": "x402-settle-tx",
+      "status": "pending: se agrega txHash cuando haya un pago de prueba autorizado"
+    },
+    "nonce": "7c7ca4445d7cf539",
+    "signature": "ed25519:985c05a38c646237fd5e0b86a68236a050893f26af9541a4dccef14fbf9cbde23a7b822d8c3db5638fe085cc5518c12abec2c6a243d86b07218403a8d8c8740c"
+  },
+  "verifier": {
+    "mode": "ed25519",
+    "publicKeyHex": "f5dc1e5aa3930cbd3afff716854b7737117fb7d0c50b6d4b4d70d85370aa486b",
+    "note": "Llave demo descartable generada para este ejemplo. No es una llave real de Marce."
+  },
+  "canonicalization": "JSON con claves ordenadas recursivamente, sin campo signature"
+}
