@@ -100,6 +100,45 @@ El pago usa **EIP-3009** (transferencia gasless de USDC) via x402 Exact EVM. El 
 
 Firma: payload canonico JSON sin `signature`; HMAC-SHA256 (demo) o ed25519 (hex keys via @noble). Ver `packages/mandate`.
 
+## Mandate v0.2
+
+Módulo **aditivo** (no reemplaza v0.1): schema, canonicalización, firma ed25519 y `checkOperation` en `packages/mandate`. Ejemplo canónico: [`packages/mandate/examples/ash-example-mandate.json`](packages/mandate/examples/ash-example-mandate.json).
+
+`version` acepta `"0.2.0"` y `"0.2.0-draft"` (el ejemplo usa el draft).
+
+### Campos
+
+| Campo | Contenido |
+|--------|-----------|
+| `kind` | `intent-mandate` |
+| `example` | flag opcional (el ejemplo es `true`) |
+| `principal` | `{ id, role, display? }` |
+| `agent` | `{ id, handle?, role }` |
+| `network` | p.ej. `eip155:84532` |
+| `scope` | `allowedAssets[]`, `allowedActions[]`, `deniedActions[]`, `approvalMode` |
+| `limits` | `currency`, `maxPerOperationUsdc`, `maxPerDayUsdc`, `dayBoundary`, `aboveLimit` |
+| `issuedAt` / `expiresAt` | ISO-8601 |
+| `authorizedBy` | id del principal |
+| `disputeLiability` | `{ withinMandate, outsideMandate, note? }` |
+| `receipt` | `{ required, chain, format, status?, txHash? }` |
+| `nonce` / `signature` | nonce + `ed25519:<hex>` |
+
+### Canonicalización y firma
+
+JSON con **claves ordenadas recursivamente**, sin el campo `signature`. La firma es ed25519 sobre esos bytes UTF-8 (keys hex crudas de 32 bytes via `@noble`, prefijo `ed25519:`). El ejemplo se firmó con `node:crypto` ed25519; `verifyMandateV2` debe aceptar esa firma.
+
+La **llave pública del ejemplo es demo y descartable**. No es una llave real de Marce ni de ningún principal. No usarla en producción.
+
+### disputeLiability (PROPUESTA)
+
+`disputeLiability` es una **PROPUESTA** pendiente de validación con la contraparte (principal y operador del agente). No es un acuerdo ejecutado.
+
+### Receipt pendiente
+
+El `receipt` del ejemplo está **pendiente**: no hay transacción on-chain todavía. `status` lo dice explícitamente; no hay `txHash`. No correr pagos live/network para “completar” este ejemplo.
+
+`checkOperation(mandate, { asset, action, amountUsdc }, { spentTodayUsdc }, now)` rechaza: no vigente / vencido, action no permitida o en `deniedActions`, asset no permitido, monto > `maxPerOperationUsdc`, o `spentToday + amount` > `maxPerDayUsdc` (USDC via `parseUsdc`/`formatUsdc`, sin floats).
+
 ## Licencia
 
 MIT (c) 2026 Marcelo Switach

@@ -34,3 +34,18 @@ export {
   assertNotExpired,
   type CreateMandateInput,
 } from "./create.js";
+export {
+  IntentMandateV2Schema,
+  UnsignedMandateV2Schema,
+  type IntentMandateV2,
+  type UnsignedMandateV2,
+} from "./schema-v2.js";
+export { canonicalizeMandateV2 } from "./canonical-v2.js";
+export { signMandateV2, verifyMandateV2 } from "./crypto-v2.js";
+export {
+  checkOperation,
+  type MandateOperationV2,
+  type MandateDayStateV2,
+  type CheckOperationReason,
+  type CheckOperationResult,
+} from "./check-v2.js";
